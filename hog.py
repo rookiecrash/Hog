@@ -154,6 +154,8 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     # BEGIN PROBLEM 5
     prescore0, prescore1 = 0, 0
     FerHog0, FerHog1 = False ,False
+
+    h1 = say
     while score1 < goal and score0 <goal:
         FerHog0 = abs(strategy0(score0, score1) -  prescore0) == 2
         prescore0 = take_turn(strategy0(score0, score1), score1, dice)
@@ -163,6 +165,8 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
         who = other(who)
         if is_swap(score0, score1):
             score0, score1 = score1, score0
+        h0 = h1(score0, score1)
+        
         if score0 >= goal or score1 >= goal:
             return score0, score1
         FerHog1 = abs(strategy1(score1, score0) - prescore1) == 2
@@ -173,6 +177,7 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
         print("DEBUG:","score0 is",score0,"score1 is",score1)
         if is_swap(score0, score1):
             score0, score1 = score1, score0
+        h1 = h0(score0, score1)
     "*** YOUR CODE HERE ***"
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
@@ -264,6 +269,16 @@ def announce_highest(who, prev_high=0, prev_score=0):
     assert who == 0 or who == 1, 'The who argument should indicate a player.'
     # BEGIN PROBLEM 7
     "*** YOUR CODE HERE ***"
+    def announce(score0, score1):
+        if who == 1:
+            if score1 - prev_score > prev_high:
+                print(score1 - prev_score,'point(s)! That\'s the biggest gain yet for Player', who)
+            return announce_highest(who,max(score1-prev_score,prev_high), score1)
+        else:
+            if score0 - prev_score > prev_high:
+                print(score0 - prev_score,'point(s)! That\'s the biggest gain yet for Player', who)
+            return announce_highest(who,max(score0-prev_score,prev_high), score0)
+    return announce
     # END PROBLEM 7
 
 
