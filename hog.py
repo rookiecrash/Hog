@@ -305,7 +305,7 @@ def always_roll(n):
     return strategy
 
 
-def make_averaged(g, num_samples=1000):
+def make_averaged(g, num_samples=10):
     """Return a function that returns the average value of G when called.
 
     To implement this function, you will have to use *args syntax, a new Python
@@ -317,6 +317,13 @@ def make_averaged(g, num_samples=1000):
     3.0
     """
     # BEGIN PROBLEM 8
+    def function_averaged(*args):
+        average_score, cnt = 0, 0
+        while cnt < num_samples:
+            average_score += g(*args)
+            cnt += 1
+        return average_score/num_samples
+    return function_averaged
     "*** YOUR CODE HERE ***"
     # END PROBLEM 8
 
@@ -330,6 +337,27 @@ def max_scoring_num_rolls(dice=six_sided, num_samples=1000):
     >>> max_scoring_num_rolls(dice)
     1
     """
+    maxscore, cnt = 0, 0
+    first, last, num = 1, 1, 1
+    thisscore = 0
+    averaged_roll_dice = make_averaged(roll_dice, num_samples)
+    while num <= 10:
+        thisscore = averaged_roll_dice(num, dice)
+        if thisscore > maxscore:
+            maxscore = thisscore
+            first, last = num, last
+            cnt = 1
+        elif thisscore == maxscore:
+            cnt += 1
+            last = num
+        num += 1
+
+    if cnt == 1 or cnt ==2:
+        return first
+    else:
+        return last
+
+    
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
     # END PROBLEM 9
@@ -356,14 +384,14 @@ def average_win_rate(strategy, baseline=always_roll(6)):
 
 def run_experiments():
     """Run a series of strategy experiments and report results."""
-    if True:  # Change to False when done finding max_scoring_num_rolls
+    if False:  # Change to False when done finding max_scoring_num_rolls
         six_sided_max = max_scoring_num_rolls(six_sided)
         print('Max scoring num rolls for six-sided dice:', six_sided_max)
 
     if False:  # Change to True to test always_roll(8)
         print('always_roll(8) win rate:', average_win_rate(always_roll(8)))
 
-    if False:  # Change to True to test bacon_strategy
+    if True:  # Change to True to test bacon_strategy
         print('bacon_strategy win rate:', average_win_rate(bacon_strategy))
 
     if False:  # Change to True to test swap_strategy
