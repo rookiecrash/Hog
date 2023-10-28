@@ -51,7 +51,6 @@ def free_bacon(score):
     while (tmp // 10) != 0:
         bit += 1
         tmp //= 10
-
     #print("bit is",bit)
     operator = 1
     if bit % 2 == 1:
@@ -109,7 +108,6 @@ def is_swap(player_score, opponent_score):
     while num > 0:
         first = num % 10
         num //= 10
-
     return last == first
     "*** YOUR CODE HERE ***"
     # END PROBLEM 4
@@ -391,10 +389,10 @@ def run_experiments():
     if False:  # Change to True to test always_roll(8)
         print('always_roll(8) win rate:', average_win_rate(always_roll(8)))
 
-    if True:  # Change to True to test bacon_strategy
+    if False:  # Change to True to test bacon_strategy
         print('bacon_strategy win rate:', average_win_rate(bacon_strategy))
 
-    if False:  # Change to True to test swap_strategy
+    if True:  # Change to True to test swap_strategy
         print('swap_strategy win rate:', average_win_rate(swap_strategy))
 
     if False:  # Change to True to test final_strategy
@@ -408,8 +406,11 @@ def bacon_strategy(score, opponent_score, margin=8, num_rolls=6):
     """This strategy rolls 0 dice if that gives at least MARGIN points, and
     rolls NUM_ROLLS otherwise.
     """
+    if free_bacon(opponent_score) >= margin:
+        return 0
+    else:
     # BEGIN PROBLEM 10
-    return 6  # Replace this statement
+        return num_rolls  # Replace this statement
     # END PROBLEM 10
 
 
@@ -419,7 +420,12 @@ def swap_strategy(score, opponent_score, margin=8, num_rolls=6):
     non-beneficial swap. Otherwise, it rolls NUM_ROLLS.
     """
     # BEGIN PROBLEM 11
-    return 6  # Replace this statement
+    bacon = free_bacon(opponent_score)
+    if (is_swap(score + bacon, opponent_score) and opponent_score > (score + bacon)) or (not is_swap(score + bacon, opponent_score) and bacon >= margin):
+        return 0
+    else:
+        return num_rolls
+    #return 6  # Replace this statement
     # END PROBLEM 11
 
 
